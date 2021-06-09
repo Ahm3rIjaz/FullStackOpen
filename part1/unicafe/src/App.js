@@ -22,7 +22,7 @@ const Statistics = ({good,neutral,bad}) => {
     )
   }
   let total = good + neutral + bad
-  let positive = (good / total) + " %"
+  let positive = ((good / total) * 100) + " %"
   let average = (good - bad) / total
   return(
     <table>
