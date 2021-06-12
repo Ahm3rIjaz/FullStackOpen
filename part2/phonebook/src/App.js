@@ -1,29 +1,61 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
-import Persons from './components/Persons'
+import ShowPersons from './components/ShowPersons'
+import personsServive from './services/persons'
 
 const App = () => {
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
-
+  const [ persons, setPersons ] = useState([])
   const [ filter, setFilter ] = useState('')
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
 
+  useEffect(() => {
+    personsServive
+      .getAll().then(initialData => setPersons(initialData))
+  }, [])
+
   const addPerson = (event) => {
     event.preventDefault();
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const personFound = persons.find(person => person.name === newName)
+    if (personFound) {
+      if (window.confirm(`${newName} is already added to phonebook\nUpdate the number with the new one?`)) {
+        const changedPerson = {...personFound, number: newNumber}
+        personsServive
+          .update(personFound.id, changedPerson).then(updatedPerson => {
+            setPersons(persons.map(person => person.id !== personFound.id ? person: updatedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch(error => {
+            alert(`${personFound.name} was already deleted from the server`)
+            setPersons(persons.filter(person => person.id !== personFound.id))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
     }
     else {
-      setPersons(persons.concat({name: newName, number: newNumber}))
-      setNewName('');
-      setNewNumber('');
+      const newPerson = {name: newName, number: newNumber}
+      personsServive
+        .create(newPerson).then(returnedNote => {
+          setPersons(persons.concat(returnedNote))
+          setNewName('');
+          setNewNumber('');
+        })
+    }
+  }
+
+  const deletePer = (personToDelete) => {
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      personsServive
+        .deletePerson(personToDelete.id).then(updatedData => {
+          setPersons(persons.filter(person => person.id !== personToDelete.id))
+        })
+        .catch(error => {
+          alert(`${personToDelete.name} was already deleted from the server`)
+          setPersons(persons.filter(person => person.id !== personToDelete.id))
+        })
     }
   }
 
@@ -43,7 +75,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} filter={filter} />
+      <ShowPersons deletePer={deletePer} persons={persons} filter={filter} />
     </div>
   )
 }
