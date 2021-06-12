@@ -3,12 +3,14 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import ShowPersons from './components/ShowPersons'
 import personsServive from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
   const [ filter, setFilter ] = useState('')
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [ errorMessage, setErrorMessage ] = useState(null)
 
   useEffect(() => {
     personsServive
@@ -28,7 +30,10 @@ const App = () => {
             setNewNumber('')
           })
           .catch(error => {
-            alert(`${personFound.name} was already deleted from the server`)
+            setErrorMessage(`'${personFound.name}' was already removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
             setPersons(persons.filter(person => person.id !== personFound.id))
             setNewName('')
             setNewNumber('')
@@ -53,7 +58,10 @@ const App = () => {
           setPersons(persons.filter(person => person.id !== personToDelete.id))
         })
         .catch(error => {
-          alert(`${personToDelete.name} was already deleted from the server`)
+          setErrorMessage(`'${personToDelete.name}' was already removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+          }, 5000)
           setPersons(persons.filter(person => person.id !== personToDelete.id))
         })
     }
@@ -66,15 +74,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={errorMessage} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
-
       <h3>Add a new</h3>
-
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
-
       <h3>Numbers</h3>
-
       <ShowPersons deletePer={deletePer} persons={persons} filter={filter} />
     </div>
   )
