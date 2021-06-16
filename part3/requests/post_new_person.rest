@@ -7,4 +7,10 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3002/api/persons/5c41c90e84d891c15dfa3431
+GET http://localhost:3002/api/persons/60c96947d9e70bd575ca6d60
+
+###
+DELETE http://localhost:3002/api/persons/60c96947d9e70bd575ca6d60
+
+###
+GET http://localhost:3002/api/persons
