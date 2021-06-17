@@ -1,0 +1,15 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "sfde",
+    "author": "sfe",
+    "url": "fjhs",
+    "likes": 912
+}
+
+###
+GET http://localhost:3003/api/blogs
+
+###
+DELETE http://localhost:3003/api/blogs/
