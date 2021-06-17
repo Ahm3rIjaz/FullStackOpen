@@ -2,7 +2,16 @@ POST http://localhost:3002/api/persons
 Content-Type: application/json
 
 {
-    "name": "Ahme",
+    "name": "ahmer",
+    "number": "0900-ffe78601"
+}
+
+###
+PUT http://localhost:3002/api/persons/60c95c4099be1ecf99d86294
+Content-Type: application/json
+
+{
+    "name": "ahmer",
     "number": "0900-ffe78601"
 }
 

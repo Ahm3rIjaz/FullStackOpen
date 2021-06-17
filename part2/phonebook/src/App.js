@@ -30,11 +30,10 @@ const App = () => {
             setNewNumber('')
           })
           .catch(error => {
-            setErrorMessage(`'${personFound.name}' was already removed from server`)
+            setErrorMessage(error.response.data["error"])
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000)
-            setPersons(persons.filter(person => person.id !== personFound.id))
             setNewName('')
             setNewNumber('')
           })
@@ -47,6 +46,12 @@ const App = () => {
           setPersons(persons.concat(returnedNote))
           setNewName('');
           setNewNumber('');
+        })
+        .catch(error => {
+          setErrorMessage(error.response.data["error"])
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 10000)
         })
     }
   }
