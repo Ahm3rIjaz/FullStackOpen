@@ -1,0 +1,26 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFobWVyIiwiaWQiOiI2MGNkOTFlZmNlNzg5ODE0YTZmYmM5MDgiLCJpYXQiOjE2MjQxNjc3NjEsImV4cCI6MTYyNDE3MTM2MX0.A3gw51r-X4dq7HITNeeROWO5_Iu8POA9iuraMO4YwNs
+
+{
+  "title": "React",
+  "author": "Anonymous",
+  "url": "https://react.com/",
+  "likes": 6
+}
+
+###
+GET http://localhost:3003/api/blogs
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFobWVyIiwiaWQiOiI2MGNkOTFlZmNlNzg5ODE0YTZmYmM5MDgiLCJpYXQiOjE2MjQxNTc5NjYsImV4cCI6MTYyNDE2MTU2Nn0.ehHZAtddnE-l9DfXpCVGo1Puxr5aeCSUnAoWAEz-PNw
+
+###
+DELETE http://localhost:3003/api/blogs/60ceafd7b119574796ffe6c0
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFobWVyIiwiaWQiOiI2MGNkOTFlZmNlNzg5ODE0YTZmYmM5MDgiLCJpYXQiOjE2MjQxNTc5NjYsImV4cCI6MTYyNDE2MTU2Nn0.ehHZAtddnE-l9DfXpCVGo1Puxr5aeCSUnAoWAEz-PNw
+
+###
+PUT http://localhost:3003/api/blogs/60cadb7b1c49c04b0c4566be
+Content-Type: application/json
+
+{
+    "likes": 9
+}
