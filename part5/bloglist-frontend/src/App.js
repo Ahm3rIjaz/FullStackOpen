@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -7,7 +7,7 @@ import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 
-const Notification = ({message, classname}) => {
+const Notification = ({ message, classname }) => {
   if (!message) {
     return null
   }
@@ -29,7 +29,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
@@ -64,10 +64,19 @@ const App = () => {
     }
   }
 
+  const blogFormRef = useRef()
+
+  const blogForm = () => (
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <BlogForm createBlog={addBlog} />
+    </Togglable>
+  )
+
   const addBlog = async (newBlog) => {
+    blogFormRef.current()
     try {
-      await blogService.create(newBlog)
-      setBlogs(blogs.concat(newBlog))
+      const response = await blogService.create(newBlog)
+      setBlogs(blogs.concat({ ...newBlog, likes: response.likes, id: response.id, user: { username: user.username, id: response.user } }))
       setSuccessMessage('Blog added successfully')
       setTimeout(() => {
         setSuccessMessage(null)
@@ -80,12 +89,21 @@ const App = () => {
     }
   }
 
-  const incLikes = (updatedBlog) => {
-    setBlogs(blogs.map(blog => blog.id !== updatedBlog.id ? blog : updatedBlog))
+  const incrementLike = async (blog) => {
+    try {
+      const updatedBlog = await blogService.incrementLike({ ...blog, likes: blog.likes + 1 })
+      setBlogs(blogs.map(blog => blog.id !== updatedBlog.id ? blog : updatedBlog ))
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const removeBlog = (id) => {
     setBlogs(blogs.filter(blog => blog.id !== id))
+    setSuccessMessage('Blog deleted successfully')
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
   }
 
   const handleLogout = () => {
@@ -100,11 +118,11 @@ const App = () => {
   const loggedIn = () => {
     if (!user) {
       return (
-        <LoginForm 
+        <LoginForm
           username={username}
           password={password}
-          handleUsernameChange={({target}) => setUsername(target.value)}
-          handlePasswordChange={({target}) => setPassword(target.value)}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
           handleLogin={handleLogin}
         />
       )
@@ -112,11 +130,9 @@ const App = () => {
     return (
       <div>
         {user.username} logged in <button onClick={handleLogout}>logout</button>
-        <Togglable buttonLabel="new blog">
-          <BlogForm createBlog={addBlog} />
-        </Togglable>
+        {blogForm()}
         {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-          <Blog key={blog.id} removeBlog={removeBlog} user={user} blog={blog} incLikes={incLikes} />
+          <Blog key={blog.id} removeBlog={removeBlog} user={user} blog={blog} incrementLike={incrementLike} />
         )}
       </div>
     )
@@ -126,8 +142,8 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       {successMessage
-      ? <Notification message={successMessage} classname="success" />
-      : <Notification message={errorMessage} classname="error" />}
+        ? <Notification message={successMessage} classname="success" />
+        : <Notification message={errorMessage} classname="error" />}
       <Notification message={errorMessage} />
       {loggedIn()}
     </div>

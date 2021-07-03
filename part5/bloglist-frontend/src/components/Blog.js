@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({blog, removeBlog, user, incLikes}) => {
+const Blog = ({ blog, removeBlog, user, incrementLike }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,15 +14,6 @@ const Blog = ({blog, removeBlog, user, incLikes}) => {
 
   const showWhenVisible = { display: isDetailsVisible ? '' : 'none' }
 
-  const incrementLike = async () => {
-    try {
-      const response = await blogService.incrementLike({ ...blog, likes: blog.likes + 1 })
-      incLikes({...blog, likes: blog.likes + 1})
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const remove = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       await blogService.remove(blog.id)
@@ -33,11 +24,11 @@ const Blog = ({blog, removeBlog, user, incLikes}) => {
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} <button onClick={() => setIsDetailsVisible(!isDetailsVisible)}>{isDetailsVisible ? 'hide' : 'view'}</button>
+        <span>{blog.title}</span> <button onClick={() => setIsDetailsVisible(!isDetailsVisible)}>{isDetailsVisible ? 'hide' : 'view'}</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="blogDetails">
         {blog.url}<br/>
-        likes {blog.likes} <button onClick={incrementLike}>like</button><br/>
+        likes {blog.likes} <button onClick={() => incrementLike(blog)} >like</button><br/>
         {blog.author}<br/>
         {blog.user.username === user.username ? (<button onClick={remove}>delete</button>) : null}
       </div>
