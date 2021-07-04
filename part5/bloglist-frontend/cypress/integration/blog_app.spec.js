@@ -92,24 +92,30 @@ describe('Blog app', function() {
         cy.createBlog({
           title: 'test Blog 1',
           author: 'tester1',
-          url: 'test1.com'
+          url: 'test1.com',
+          likes: 15
         })
         cy.createBlog({
           title: 'test Blog 2',
           author: 'tester2',
-          url: 'test2.com'
+          url: 'test2.com',
+          likes: 28
         })
         cy.createBlog({
           title: 'test Blog 3',
           author: 'tester3',
-          url: 'test3.com'
+          url: 'test3.com',
+          likes: 20
         })
       })
 
       it('blogs are ordered with inreasing number of likes', function() {
-        cy.contains('test Blog').parent().find('button').as('theButton')
-        cy.get('@theButton').click()
-        cy.contains('like')
+        cy.get('#blog')
+          .then(blog => {
+            cy.wrap(blog[0]).contains('test Blog 2')
+            cy.wrap(blog[1]).contains('test Blog 3')
+            cy.wrap(blog[2]).contains('test Blog 1')
+          })
       })
     })
   })

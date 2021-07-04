@@ -22,7 +22,7 @@ const Blog = ({ blog, removeBlog, user, incrementLike }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div id="blog" style={blogStyle}>
       <div>
         <span>{blog.title}</span> <button onClick={() => setIsDetailsVisible(!isDetailsVisible)}>{isDetailsVisible ? 'hide' : 'view'}</button>
       </div>
