@@ -15,7 +15,7 @@ export const setNotification = (notification, duration) => {
       type: 'SET_NOTIFICATION',
       notification
     })
-    await setTimeout(() => dispatch(clearNotification()), duration * 1000)
+    setTimeout(() => dispatch(clearNotification()), duration * 1000)
   }
 }
 
